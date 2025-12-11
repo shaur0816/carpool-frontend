@@ -27,6 +27,11 @@
     gap: 8px;
   }
 
+  /* 🌿 森林風格 ICON */
+  .leaf-icon {
+    font-size: 26px;
+  }
+
   .pickup-card {
     background: white;
     padding: 20px;
@@ -60,6 +65,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    transition: 0.25s ease;
+  }
+
+  /* hover → 深綠 */
+  .time-buttons button:hover {
+    background: #4a7559;
+    border-color: #365a45;
   }
 
   .selected {
@@ -143,7 +155,11 @@
 
 <body>
 
-<h1>中華佛教明心見性協會共乘登記</h1>
+<h1>
+  <span class="leaf-icon">🌿</span>
+  中華佛教明心見性協會共乘登記
+  <span class="leaf-icon">🌿</span>
+</h1>
 
 <div class="pickup-card" style="color:#d32f2f; font-weight:700;">
   烏日高鐵站上車地點：1F 載客區 1 號出口（非計程車區）
@@ -159,8 +175,9 @@
 <div id="lists"></div>
 
 <script>
-const API = "https://carpool.zeabur.app";  // ← 修改成你的 Zeabur 網域
+const API = "https://carpool.zeabur.app";
 
+/* 時間 */
 const timeSlots = [
   "12/12(五）15:40 前一天入住",
   "12/13（六）07:30 見部上課",
@@ -169,6 +186,7 @@ const timeSlots = [
   "12/14（日）17:10 修部下課"
 ];
 
+/* 路線 */
 const routes = [
   "去程：烏日高鐵 → 菘畫居",
   "去程：烏日高鐵 → 菘畫居",
@@ -184,7 +202,7 @@ let selectedIndex = 0;
 const btnArea = document.getElementById("btnArea");
 timeSlots.forEach((slot, i) => {
   const btn = document.createElement("button");
-  btn.textContent = slot;
+  btn.textContent = `🌲 ${slot}`;
 
   if (i === 0) btn.classList.add("selected");
 
@@ -198,7 +216,7 @@ timeSlots.forEach((slot, i) => {
   btnArea.appendChild(btn);
 });
 
-/* 1️⃣ 初始載入資料 */
+/* 讀取資料 */
 async function loadList() {
   const res = await fetch(`${API}/list`);
   data = await res.json();
@@ -206,7 +224,7 @@ async function loadList() {
 }
 loadList();
 
-/* 渲染名單 */
+/* 修正版渲染列表 */
 function renderLists() {
   const lists = document.getElementById("lists");
   lists.innerHTML = "";
@@ -216,8 +234,9 @@ function renderLists() {
     div.className = "list";
     div.id = "list-" + i;
 
+    /* 標題 + icon */
     div.innerHTML += `
-      <h2>${slot}</h2>
+      <h2>🌿 ${slot}</h2>
       <div class="route">${routes[i]}</div>
     `;
 
@@ -225,12 +244,17 @@ function renderLists() {
       div.innerHTML += `<div class="empty">尚無登記者</div>`;
     } else {
       data[i].forEach((name, idx) => {
+        /* ❗ 避免把時間標題當成可刪除項目 → 只對名字生成刪除鍵 */
+        if (!name.trim()) return;
+
         const row = document.createElement("div");
         row.className = "name-item";
+
         row.innerHTML = `
-          <span>${name}</span>
+          <span>🌱 ${name}</span>
           <button class="remove-btn" onclick="removeName(${i}, ${idx})">刪除</button>
         `;
+
         div.appendChild(row);
       });
     }
@@ -239,7 +263,7 @@ function renderLists() {
   });
 }
 
-/* 2️⃣ 新增姓名（寫入 Google Sheet） */
+/* 新增姓名 */
 async function addName() {
   const name = document.getElementById("name").value.trim();
   if (!name) return alert("請輸入姓名");
@@ -252,12 +276,10 @@ async function addName() {
 
   document.getElementById("name").value = "";
   loadList();
-
-  document.getElementById("list-" + selectedIndex)
-    .scrollIntoView({ behavior: "smooth" });
+  document.getElementById("list-" + selectedIndex).scrollIntoView({ behavior: "smooth" });
 }
 
-/* 3️⃣ 刪除姓名（從 Google Sheet 刪除） */
+/* 刪除 */
 async function removeName(t, n) {
   if (!confirm("確認刪除？")) return;
 
@@ -273,4 +295,3 @@ async function removeName(t, n) {
 
 </body>
 </html>
-

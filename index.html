@@ -27,10 +27,7 @@
     gap: 8px;
   }
 
-  /* 🌿 森林風格 ICON */
-  .leaf-icon {
-    font-size: 26px;
-  }
+  .leaf-icon { font-size: 26px; }
 
   .pickup-card {
     background: white;
@@ -45,13 +42,6 @@
     border: 2px solid #D4E157;
   }
 
-  .time-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 25px;
-  }
-
   .time-buttons button {
     padding: 18px;
     font-size: 22px;
@@ -62,13 +52,13 @@
     cursor: pointer;
     width: 100%;
     text-align: left;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: 0.25s ease;
+    transition: 0.25s;
   }
 
-  /* hover → 深綠 */
   .time-buttons button:hover {
     background: #4a7559;
     border-color: #365a45;
@@ -198,7 +188,7 @@ const routes = [
 let data = [];
 let selectedIndex = 0;
 
-/* 建立按鈕 */
+/* 時間按鈕 */
 const btnArea = document.getElementById("btnArea");
 timeSlots.forEach((slot, i) => {
   const btn = document.createElement("button");
@@ -207,8 +197,7 @@ timeSlots.forEach((slot, i) => {
   if (i === 0) btn.classList.add("selected");
 
   btn.onclick = () => {
-    document.querySelectorAll(".time-buttons button")
-      .forEach(b => b.classList.remove("selected"));
+    document.querySelectorAll(".time-buttons button").forEach(b => b.classList.remove("selected"));
     btn.classList.add("selected");
     selectedIndex = i;
   };
@@ -216,7 +205,7 @@ timeSlots.forEach((slot, i) => {
   btnArea.appendChild(btn);
 });
 
-/* 讀取資料 */
+/* 載入名單 */
 async function loadList() {
   const res = await fetch(`${API}/list`);
   data = await res.json();
@@ -224,7 +213,11 @@ async function loadList() {
 }
 loadList();
 
-/* 修正版渲染列表 */
+/* -----------------------------
+   🟢 修正版 renderLists()
+   → 不顯示第一筆（時間列）
+   → 刪除 idx - 1 才對應到 Google Sheet
+------------------------------ */
 function renderLists() {
   const lists = document.getElementById("lists");
   lists.innerHTML = "";
@@ -234,25 +227,24 @@ function renderLists() {
     div.className = "list";
     div.id = "list-" + i;
 
-    /* 標題 + icon */
     div.innerHTML += `
       <h2>🌿 ${slot}</h2>
       <div class="route">${routes[i]}</div>
     `;
 
-    if (!data[i] || data[i].length === 0) {
+    /* 若資料不足（只有標題或空） */
+    if (!data[i] || data[i].length <= 1) {
       div.innerHTML += `<div class="empty">尚無登記者</div>`;
     } else {
       data[i].forEach((name, idx) => {
-        /* ❗ 避免把時間標題當成可刪除項目 → 只對名字生成刪除鍵 */
-        if (!name.trim()) return;
+        if (idx === 0) return; // ⛔ 略過第一列（時間列）
 
         const row = document.createElement("div");
         row.className = "name-item";
 
         row.innerHTML = `
           <span>🌱 ${name}</span>
-          <button class="remove-btn" onclick="removeName(${i}, ${idx})">刪除</button>
+          <button class="remove-btn" onclick="removeName(${i}, ${idx - 1})">刪除</button>
         `;
 
         div.appendChild(row);
@@ -263,7 +255,7 @@ function renderLists() {
   });
 }
 
-/* 新增姓名 */
+/* 新增 */
 async function addName() {
   const name = document.getElementById("name").value.trim();
   if (!name) return alert("請輸入姓名");
@@ -276,10 +268,11 @@ async function addName() {
 
   document.getElementById("name").value = "";
   loadList();
+
   document.getElementById("list-" + selectedIndex).scrollIntoView({ behavior: "smooth" });
 }
 
-/* 刪除 */
+/* 刪除（rowIndex = idx - 1） */
 async function removeName(t, n) {
   if (!confirm("確認刪除？")) return;
 

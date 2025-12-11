@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>明心見性協會｜共乘登記</title>
+
+<style>
+  body {
+    font-family: "Noto Sans TC", sans-serif;
+    background: #FFF8E1;
+    margin: 0;
+    padding: 20px;
+    color: #355E3B;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2F5D3A;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pickup-card {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+    font-size: 22px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 600;
+    border: 2px solid #D4E157;
+  }
+
+  .time-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .time-buttons button {
+    padding: 18px;
+    font-size: 22px;
+    background: #5d8b6d;
+    border-radius: 18px;
+    border: 2px solid #446b52;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .selected {
+    background: #466f53;
+    border-color: #365642;
+  }
+
+  .input-area {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    text-align: center;
+    border: 2px solid #DCE775;
+    margin-bottom: 25px;
+  }
+
+  input {
+    font-size: 24px;
+    width: 75%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 3px solid #8BC34A;
+    background: #FFFDE7;
+  }
+
+  .add-btn {
+    background: #FBC02D;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 22px;
+    color: #3E2723;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .list {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    border: 2px solid #DCE775;
+  }
+
+  .list h2 {
+    font-size: 24px;
+    color: #33691E;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .route {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  .name-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #FFF9C4;
+    border-radius: 14px;
+    font-size: 22px;
+    margin-bottom: 10px;
+    border: 2px solid #F9E79F;
+  }
+
+  .remove-btn {
+    background: #FF7043;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>中華佛教明心見性協會共乘登記</h1>
+
+<div class="pickup-card" style="color:#d32f2f; font-weight:700;">
+  烏日高鐵站上車地點：1F 載客區 1 號出口（非計程車區）
+</div>
+
+<div class="time-buttons" id="btnArea"></div>
+
+<div class="input-area">
+  <input id="name" type="text" placeholder="請輸入姓名">
+  <button class="add-btn" onclick="addName()">加入</button>
+</div>
+
+<div id="lists"></div>
+
+<script>
+const API = "https://carpool.zeabur.app";  // ← 修改成你的 Zeabur 網域
+
+const timeSlots = [
+  "12/12(五）15:40 前一天入住",
+  "12/13（六）07:30 見部上課",
+  "12/14（日）07:30 修部上課",
+  "12/13（六）17:30 見部下課",
+  "12/14（日）17:10 修部下課"
+];
+
+const routes = [
+  "去程：烏日高鐵 → 菘畫居",
+  "去程：烏日高鐵 → 菘畫居",
+  "去程：烏日高鐵 → 菘畫居",
+  "回程：菘畫居 → 烏日高鐵",
+  "回程：菘畫居 → 烏日高鐵"
+];
+
+let data = [];
+let selectedIndex = 0;
+
+/* 建立按鈕 */
+const btnArea = document.getElementById("btnArea");
+timeSlots.forEach((slot, i) => {
+  const btn = document.createElement("button");
+  btn.textContent = slot;
+
+  if (i === 0) btn.classList.add("selected");
+
+  btn.onclick = () => {
+    document.querySelectorAll(".time-buttons button")
+      .forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    selectedIndex = i;
+  };
+
+  btnArea.appendChild(btn);
+});
+
+/* 1️⃣ 初始載入資料 */
+async function loadList() {
+  const res = await fetch(`${API}/list`);
+  data = await res.json();
+  renderLists();
+}
+loadList();
+
+/* 渲染名單 */
+function renderLists() {
+  const lists = document.getElementById("lists");
+  lists.innerHTML = "";
+
+  timeSlots.forEach((slot, i) => {
+    const div = document.createElement("div");
+    div.className = "list";
+    div.id = "list-" + i;
+
+    div.innerHTML += `
+      <h2>${slot}</h2>
+      <div class="route">${routes[i]}</div>
+    `;
+
+    if (!data[i] || data[i].length === 0) {
+      div.innerHTML += `<div class="empty">尚無登記者</div>`;
+    } else {
+      data[i].forEach((name, idx) => {
+        const row = document.createElement("div");
+        row.className = "name-item";
+        row.innerHTML = `
+          <span>${name}</span>
+          <button class="remove-btn" onclick="removeName(${i}, ${idx})">刪除</button>
+        `;
+        div.appendChild(row);
+      });
+    }
+
+    lists.appendChild(div);
+  });
+}
+
+/* 2️⃣ 新增姓名（寫入 Google Sheet） */
+async function addName() {
+  const name = document.getElementById("name").value.trim();
+  if (!name) return alert("請輸入姓名");
+
+  await fetch(`${API}/add`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ columnIndex: selectedIndex, name }),
+  });
+
+  document.getElementById("name").value = "";
+  loadList();
+
+  document.getElementById("list-" + selectedIndex)
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+/* 3️⃣ 刪除姓名（從 Google Sheet 刪除） */
+async function removeName(t, n) {
+  if (!confirm("確認刪除？")) return;
+
+  await fetch(`${API}/delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ columnIndex: t, rowIndex: n }),
+  });
+
+  loadList();
+}
+</script>
+
+</body>
+</html>
+

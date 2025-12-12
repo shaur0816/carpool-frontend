@@ -63,9 +63,10 @@
   }
 
   .time-buttons button:hover {
-    background: #4a7559;
-    border-color: #365a45;
-  }
+  background: #2e4d3a; /* 更深綠，對比更強 */
+  border-color: #1d3327;
+  transform: scale(1.02); /* 微放大，提升互動感 */
+}
 
   .selected {
     background: #466f53;
@@ -218,8 +219,8 @@ loadList();
 
 /* -----------------------------
    🟢 修正版 renderLists()
-   → 不顯示第一筆（時間列）
-   → 刪除 idx - 1 才對應到 Google Sheet
+   → 顯示第一筆（時間列）
+   → 不刪除 idx - 1 才對應到 Google Sheet
 ------------------------------ */
 function renderLists() {
   const lists = document.getElementById("lists");
@@ -235,19 +236,17 @@ function renderLists() {
       <div class="route">${routes[i]}</div>
     `;
 
-    /* 若資料不足（只有標題或空） */
-    if (!data[i] || data[i].length <= 1) {
+    if (!data[i] || data[i].length === 0) {
       div.innerHTML += `<div class="empty">尚無登記者</div>`;
     } else {
       data[i].forEach((name, idx) => {
-        if (idx === 0) return; // ⛔ 略過第一列（時間列）
 
         const row = document.createElement("div");
         row.className = "name-item";
 
         row.innerHTML = `
           <span>🌱 ${name}</span>
-          <button class="remove-btn" onclick="removeName(${i}, ${idx - 1})">刪除</button>
+          <button class="remove-btn" onclick="removeName(${i}, ${idx})">刪除</button>
         `;
 
         div.appendChild(row);
@@ -257,7 +256,6 @@ function renderLists() {
     lists.appendChild(div);
   });
 }
-
 /* 新增 */
 async function addName() {
   const name = document.getElementById("name").value.trim();
@@ -276,7 +274,7 @@ async function addName() {
 }
 
 /* 刪除（rowIndex = idx - 1） */
-async function removeName(t, n) {
+async function removeName(t, idx) {
   if (!confirm("確認刪除？")) return;
 
   await fetch(`${API}/delete`, {

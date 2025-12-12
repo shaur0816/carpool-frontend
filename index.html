@@ -1,177 +1,224 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>明心見性協會｜共乘登記</title>
-<link rel="icon" type="image/png" href="./icon.png">
-<link rel="apple-touch-icon" href="./icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+
+<link rel="icon" type="image/png" href="./icon.png" />
+<link rel="apple-touch-icon" href="./icon.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="./icon.png" />
 
 <style>
-  body {
-    font-family: "Noto Sans TC", sans-serif;
-    background: #FFF8E1;
-    margin: 0;
-    padding: 20px;
-    color: #355E3B;
-  }
-
-  h1 {
-    text-align: center;
-    font-size: 30px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #2F5D3A;
-    font-weight: 800;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .leaf-icon { font-size: 26px; }
-
-  .pickup-card {
-    background: white;
-    padding: 20px;
-    border-radius: 18px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
-    font-size: 22px;
-    text-align: center;
-    line-height: 1.6;
-    font-weight: 600;
-    border: 2px solid #D4E157;
-  }
-
-  .time-buttons button {
-    padding: 18px;
-    font-size: 22px;
-    background: #5d8b6d;
-    border-radius: 18px;
-    border: 2px solid #446b52;
-    color: white;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: 0.25s;
-  }
-
-  .time-buttons button:hover {
-  background: #2e4d3a; /* 更深綠，對比更強 */
-  border-color: #1d3327;
-  transform: scale(1.02); /* 微放大，提升互動感 */
+/* =======================
+   🌿 全域樣式
+======================= */
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background: #f7f5e9;
+  margin: 0;
+  padding: 22px;
+  color: #355e3b;
 }
 
-  .selected {
-    background: #466f53;
-    border-color: #365642;
-  }
+/* 標題 */
+h1 {
+  text-align: center;
+  font-size: 30px;
+  margin: 0 0 18px 0;
+  color: #2f5d3a;
+  font-weight: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
 
-  .input-area {
-    background: white;
-    padding: 20px;
-    border-radius: 18px;
-    text-align: center;
-    border: 2px solid #DCE775;
-    margin-bottom: 25px;
-  }
+.icon {
+  font-size: 30px;
+}
 
-  input {
-    font-size: 24px;
-    width: 75%;
-    padding: 14px;
-    border-radius: 14px;
-    border: 3px solid #8BC34A;
-    background: #FFFDE7;
-  }
+/* 高鐵資訊卡片 */
+.pickup-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 600;
+  border-left: 6px solid #d4e157;
+}
 
-  .add-btn {
-    background: #FBC02D;
-    border: none;
-    padding: 14px 22px;
-    border-radius: 14px;
-    font-size: 22px;
-    color: #3E2723;
-    margin-left: 8px;
-    cursor: pointer;
-    font-weight: 700;
-  }
+/* =======================
+   🌿 時間按鈕
+======================= */
+.time-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
 
-  .list {
-    background: white;
-    padding: 20px;
-    border-radius: 18px;
-    margin-bottom: 25px;
-    border: 2px solid #DCE775;
-  }
+.time-btn {
+  padding: 18px;
+  font-size: 22px;
+  background: #5d8b6d;
+  border-radius: 16px;
+  border: 2px solid #446b52;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: 0.25s ease;
+}
 
-  .list h2 {
-    font-size: 24px;
-    color: #33691E;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+.time-btn:hover {
+  background: #2e4d3a;
+  border-color: #1d3327;
+  transform: scale(1.03);
+}
 
-  .route {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 12px;
-  }
+.time-btn.selected {
+  background: #365d41;
+  border-color: #1f3d2a;
+  transform: scale(1.02);
+}
 
-  .name-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: #FFF9C4;
-    border-radius: 14px;
-    font-size: 22px;
-    margin-bottom: 10px;
-    border: 2px solid #F9E79F;
-  }
+/* =======================
+   🌿 新增姓名區
+======================= */
+.input-area {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  border: 2px solid #dce775;
+  margin-bottom: 25px;
+  text-align: center;
+}
 
-  .remove-btn {
-    background: #FF7043;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 20px;
-    cursor: pointer;
-  }
+input {
+  font-size: 22px;
+  padding: 12px;
+  width: 70%;
+  border-radius: 12px;
+  border: 3px solid #8bc34a;
+  background: #fffde7;
+}
+
+.add-btn {
+  background: #fbc02d;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 22px;
+  color: #3e2723;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.add-btn:hover {
+  background: #f9a825;
+  transform: scale(1.05);
+}
+
+/* =======================
+   🌿 名單列表
+======================= */
+.list {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 25px;
+  border: 2px solid #dce775;
+}
+
+.list h2 {
+  font-size: 24px;
+  margin-top: 0;
+  color: #33691e;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.route {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #4d6b3c;
+}
+
+.name-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #fff9c4;
+  border-radius: 14px;
+  font-size: 22px;
+  margin-bottom: 10px;
+  border: 2px solid #f9e79f;
+  align-items: center;
+}
+
+.remove-btn {
+  background: #ff7043;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.remove-btn:hover {
+  background: #e64a19;
+  transform: scale(1.08);
+}
+
+.empty {
+  color: #888;
+  font-size: 18px;
+  padding: 12px 0;
+}
+
 </style>
 </head>
 
 <body>
 
 <h1>
-  <span class="leaf-icon">🌿</span>
-  中華佛教明心見性協會共乘登記
-  <span class="leaf-icon">🌿</span>
+  <span class="icon">🍃</span>
+  明心見性協會｜共乘登記
+  <span class="icon">🍃</span>
 </h1>
 
-<div class="pickup-card" style="color:#d32f2f; font-weight:700;">
-  烏日高鐵站上車地點：1F 載客區 1 號出口（非計程車區）
+<div class="pickup-card">
+  🚗 烏日高鐵站上車地點：<br>1F 載客區 1 號出口（非計程車區）
 </div>
 
+<!-- 時間按鈕 -->
 <div class="time-buttons" id="btnArea"></div>
 
+<!-- 新增姓名 -->
 <div class="input-area">
-  <input id="name" type="text" placeholder="請輸入姓名">
+  <input id="name" type="text" placeholder="請輸入姓名" />
   <button class="add-btn" onclick="addName()">加入</button>
 </div>
 
+<!-- 名單列表 -->
 <div id="lists"></div>
 
 <script>
 const API = "https://carpool.zeabur.app";
 
-/* 時間 */
+/* 時間 / 路線資料 */
 const timeSlots = [
   "12/12(五）15:40 前一天入住",
   "12/13（六）07:30 見部上課",
@@ -180,7 +227,6 @@ const timeSlots = [
   "12/14（日）17:10 修部下課"
 ];
 
-/* 路線 */
 const routes = [
   "去程：烏日高鐵 → 菘畫居",
   "去程：烏日高鐵 → 菘畫居",
@@ -192,16 +238,19 @@ const routes = [
 let data = [];
 let selectedIndex = 0;
 
-/* 時間按鈕 */
+/* =============================
+   🌿 時間按鈕產生
+============================= */
 const btnArea = document.getElementById("btnArea");
 timeSlots.forEach((slot, i) => {
   const btn = document.createElement("button");
+  btn.className = "time-btn";
   btn.textContent = `🌲 ${slot}`;
 
   if (i === 0) btn.classList.add("selected");
 
   btn.onclick = () => {
-    document.querySelectorAll(".time-buttons button").forEach(b => b.classList.remove("selected"));
+    document.querySelectorAll(".time-btn").forEach(b => b.classList.remove("selected"));
     btn.classList.add("selected");
     selectedIndex = i;
   };
@@ -209,7 +258,9 @@ timeSlots.forEach((slot, i) => {
   btnArea.appendChild(btn);
 });
 
-/* 載入名單 */
+/* =============================
+   🌿 載入名單
+============================= */
 async function loadList() {
   const res = await fetch(`${API}/list`);
   data = await res.json();
@@ -217,11 +268,9 @@ async function loadList() {
 }
 loadList();
 
-/* -----------------------------
-   🟢 修正版 renderLists()
-   → 顯示第一筆（時間列）
-   → 不刪除 idx - 1 才對應到 Google Sheet
------------------------------- */
+/* =============================
+   🌿 渲染名單（正確版）
+============================= */
 function renderLists() {
   const lists = document.getElementById("lists");
   lists.innerHTML = "";
@@ -232,7 +281,7 @@ function renderLists() {
     div.id = "list-" + i;
 
     div.innerHTML += `
-      <h2>🌿 ${slot}</h2>
+      <h2>🍀 ${slot}</h2>
       <div class="route">${routes[i]}</div>
     `;
 
@@ -240,7 +289,6 @@ function renderLists() {
       div.innerHTML += `<div class="empty">尚無登記者</div>`;
     } else {
       data[i].forEach((name, idx) => {
-
         const row = document.createElement("div");
         row.className = "name-item";
 
@@ -256,7 +304,10 @@ function renderLists() {
     lists.appendChild(div);
   });
 }
-/* 新增 */
+
+/* =============================
+   🌿 新增姓名
+============================= */
 async function addName() {
   const name = document.getElementById("name").value.trim();
   if (!name) return alert("請輸入姓名");
@@ -269,18 +320,18 @@ async function addName() {
 
   document.getElementById("name").value = "";
   loadList();
-
-  document.getElementById("list-" + selectedIndex).scrollIntoView({ behavior: "smooth" });
 }
 
-/* 刪除（rowIndex = idx - 1） */
-async function removeName(t, idx) {
+/* =============================
+   🌿 刪除姓名（正確對應 Sheets）
+============================= */
+async function removeName(col, rowIndex) {
   if (!confirm("確認刪除？")) return;
 
   await fetch(`${API}/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ columnIndex: t, rowIndex: n }),
+    body: JSON.stringify({ columnIndex: col, rowIndex }),
   });
 
   loadList();
